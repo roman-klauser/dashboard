@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#fff; --text:#111; --muted:#8a8a8a;
+    --border:#ececec; --grid:#f4f4f4;
+    --pos:#2f9e6e; --neg:#d65a5a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--text);}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;font-feature-settings:"tnum";
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:56px 32px 80px;}
+
+  header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:44px;gap:16px;flex-wrap:wrap;}
+  h1{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin:0;}
+  .period{font-size:12px;color:var(--muted);}
+
+  .metrics{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    margin-bottom:56px;
+  }
+  .metric{padding:22px 24px 22px 0;border-right:1px solid var(--border);}
+  .metric:last-child{border-right:none;padding-right:0;}
+  .metric .label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:10px;}
+  .metric .value{font-size:24px;font-weight:500;letter-spacing:-.01em;}
+  .metric .value.pos{color:var(--pos);}
+  .metric .value.neg{color:var(--neg);}
+  .metric .value .unit{font-size:12px;color:var(--muted);font-weight:400;margin-left:4px;}
+
+  .chart-block{margin-bottom:0;}
+  .chart-title{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:18px;}
+
+  .chart-wrap{position:relative;width:100%;}
+  .chart-wrap.h340{height:340px;}
+  .chart-wrap.h380{height:380px;}
+
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-bottom:56px;}
+  .row:last-of-type{margin-bottom:0;}
+
+  footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--border);
+         font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+
+  @media (max-width:760px){
+    .wrap{padding:32px 20px 60px;}
+    .metrics{grid-template-columns:1fr 1fr;}
+    .metric{padding:18px 16px 18px 0;}
+    .metric:nth-child(2){border-right:none;}
+    .metric:nth-child(1),.metric:nth-child(2){border-bottom:1px solid var(--border);}
+    .row{grid-template-columns:1fr;gap:48px;margin-bottom:48px;}
+    .metric .value{font-size:20px;}
+    .chart-wrap.h340{height:280px;}
+    .chart-wrap.h380{height:320px;}
+  }
+
+  .drop-overlay{
+    position:fixed;inset:0;background:rgba(255,255,255,0.97);
+    display:none;align-items:center;justify-content:center;z-index:100;
+  }
+  .drop-overlay.on{display:flex;}
+  .drop-inner{
+    border:1px dashed #d4d4d4;border-radius:10px;
+    padding:56px 72px;text-align:center;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .drop-overlay.drag .drop-inner{border-color:#111;transform:scale(1.01);}
+  .drop-title{font-size:14px;font-weight:500;margin-bottom:8px;letter-spacing:.01em;}
+  .drop-sub{font-size:12px;color:var(--muted);}
+  .drop-hint{font-size:11px;color:#b0b0b0;margin-top:20px;max-width:320px;}
+  .link{background:none;border:none;color:#111;text-decoration:underline;cursor:pointer;font:inherit;padding:0;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Account Dashboard</h1>
+    <div class="period" id="period">—</div>
+  </header>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="label">Endbalance</div>
+      <div class="value" id="m-end">—</div>
+    </div>
+    <div class="metric">
+      <div class="label">Netto P&amp;L</div>
+      <div class="value" id="m-pnl">—</div>
+    </div>
+    <div class="metric">
+      <div class="label">Win-Rate</div>
+      <div class="value" id="m-win">—</div>
+    </div>
+    <div class="metric">
+      <div class="label">Max Drawdown</div>
+      <div class="value" id="m-dd">—</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="chart-block">
+      <div class="chart-title">Balance-Verlauf</div>
+      <div class="chart-wrap h340"><canvas id="balance"></canvas></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-title">Drawdown</div>
+      <div class="chart-wrap h340"><canvas id="drawdown"></canvas></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="chart-block">
+      <div class="chart-title">Aufbau Endstand (Wasserfall)</div>
+      <div class="chart-wrap h340"><canvas id="waterfall"></canvas></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-title">Performance je Instrument</div>
+      <div class="chart-wrap h380"><canvas id="instruments"></canvas></div>
+    </div>
+  </div>
+
+  <footer>
+    <span id="foot-left">—</span>
+    <span id="foot-right">—</span>
+  </footer>
+</div>
+
+<div class="drop-overlay" id="drop">
+  <div class="drop-inner">
+    <div class="drop-title">Datei hier ablegen</div>
+    <div class="drop-sub">JSON oder CSV — oder <button class="link" id="pick">Datei wählen</button></div>
+    <input type="file" id="file" accept=".json,.csv,.txt" hidden>
+    <div class="drop-hint" id="drop-hint">Auto-Load fehlgeschlagen — bitte Datei manuell laden.</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   KONFIGURATION
+   ============================================================ */
+const DATA_URL = 'data/latest.json';   // ← primäre Datenquelle
+let CURRENCY_LABEL = 'USD';            // wird beim Rendern überschrieben
+
+/* ============================================================
+   STYLE-KONSTANTEN
+   ============================================================ */
+const POS = '#2f9e6e', NEG = '#d65a5a', INK = '#111111', MUTED = '#8a8a8a';
+const GRID = '#f4f4f4', BORDER = '#ececec';
+
+/* ============================================================
+   CSV-PARSER (nur für Drag-&-Drop-Override)
+   ============================================================ */
+function parseNum(s){
+  if (s === undefined || s === null) return NaN;
+  return parseFloat(String(s).replace(/,/g,'').trim());
+}
+function parseDateCSV(s){
+  return new Date(String(s).trim().replace(' ', 'T').replace(/\s+/g,''));
+}
+function parseRow(line){
+  const out = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++){
+    const c = line[i];
+    if (inQ){
+      if (c === '"'){
+        if (line[i+1] === '"'){ cur += '"'; i++; }
+        else inQ = false;
+      } else cur += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ','){ out.push(cur); cur = ''; }
+      else cur += c;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+function parseCSV(text){
+  const lines = text.replace(/\r\n?/g,'\n').split('\n').filter(l => l.trim().length);
+  if (lines.length < 2) throw new Error('Keine Datenzeilen gefunden.');
+  const header = parseRow(lines[0]).map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const cells = parseRow(line);
+    const row = {};
+    header.forEach((h,i) => row[h] = (cells[i] ?? '').trim());
+    return row;
+  });
+}
+
+/* ============================================================
+   NORMALISIERUNG: CSV-Zeile oder JSON-Objekt → einheitliches tx
+   ============================================================ */
+function txFromCSVRow(r){
+  return {
+    t:       parseDateCSV(r['Modified (UTC)']),
+    balance: parseNum(r['Balance']),
+    amount:  parseNum(r['Amount']) || 0,
+    type:    (r['Type'] || '').trim(),
+    symbol:  (r['Instrument Symbol'] || '').trim(),
+    name:    (r['Instrument Name'] || '').trim(),
+  };
+}
+function txFromJSON(t){
+  return {
+    t:       new Date(t.timestamp),
+    balance: t.balance,
+    amount:  t.amount || 0,
+    type:    (t.type || '').trim(),
+    symbol:  (t.symbol || '').trim(),
+    name:    (t.name || '').trim(),
+  };
+}
+
+/* ============================================================
+   FORMATIERUNG
+   ============================================================ */
+const fmtUSD     = v => v.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtSigned  = v => (v >= 0 ? '+' : '') + fmtUSD(v);
+const fmtDayLong = d => d.toLocaleDateString('de-DE',{day:'2-digit', month:'2-digit', year:'numeric'});
+const fmtDayShort = iso => {
+  const [,m,d] = iso.split('-');
+  return `${d}.${m}.`;
+};
+const fmtStamp = iso => {
+  const d = new Date(iso);
+  const dd = String(d.getUTCDate()).padStart(2,'0');
+  const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+  const hh = String(d.getUTCHours()).padStart(2,'0');
+  const mi = String(d.getUTCMinutes()).padStart(2,'0');
+  return `${dd}.${mm}. ${hh}:${mi} UTC`;
+};
+function fmtTimeLabel(t){
+  const d = t.t;
+  const dd = String(d.getUTCDate()).padStart(2,'0');
+  const mm = String(d.getUTCMonth()+1).padStart(2,'0');
+  const hh = String(d.getUTCHours()).padStart(2,'0');
+  const mi = String(d.getUTCMinutes()).padStart(2,'0');
+  return `${dd}.${mm} ${hh}:${mi}`;
+}
+
+/* ============================================================
+   ANALYSE  (arbeitet auf normalisierten tx-Objekten)
+   ============================================================ */
+function analyze(rawTx, currency, updated){
+  const tx = rawTx
+    .filter(t => t.t instanceof Date && !isNaN(t.t) && !isNaN(t.balance))
+    .sort((a,b) => a.t - b.t);
+
+  if (!tx.length) throw new Error('Keine gültigen Transaktionen.');
+
+  const first = tx[0], last = tx[tx.length - 1];
+  const endBalance = last.balance;
+
+  const deposits = tx
+    .filter(t => t.type === 'DEPOSIT')
+    .reduce((s,t) => s + t.amount, 0);
+
+  const netPnl = tx
+    .filter(t => t.type !== 'DEPOSIT' && t.type !== 'WITHDRAWAL')
+    .reduce((s,t) => s + t.amount, 0);
+
+  const pnlPct = deposits > 0 ? (netPnl / deposits) * 100 : 0;
+
+  const trades = tx.filter(t => t.type === 'TRADE');
+  const wins = trades.filter(t => t.amount > 0).length;
+  const winRate = trades.length ? (wins / trades.length) * 100 : 0;
+
+  // Drawdown (absolut + relativ)
+  const balances = tx.map(t => t.balance);
+  let peak = -Infinity;
+  let maxDD = 0, maxDDPct = 0;
+  const ddSeries = [], ddPctSeries = [];
+  balances.forEach(b => {
+    if (b > peak) peak = b;
+    const dd    = b - peak;
+    const ddPct = peak > 0 ? (dd / peak) * 100 : 0;
+    ddSeries.push(dd);
+    ddPctSeries.push(ddPct);
+    if (dd < maxDD){ maxDD = dd; maxDDPct = ddPct; }
+  });
+
+  // Tagesergebnis
+  const dayMap = new Map();
+  tx.forEach(t => {
+    if (t.type === 'DEPOSIT' || t.type === 'WITHDRAWAL') return;
+    const key = t.t.toISOString().slice(0,10);
+    dayMap.set(key, (dayMap.get(key) || 0) + t.amount);
+  });
+  const daily = [...dayMap.entries()]
+    .sort(([a],[b]) => a.localeCompare(b))
+    .map(([d,v]) => ({ date: d, value: v }));
+
+  // Performance je Instrument
+  const instMap = new Map();
+  tx.forEach(t => {
+    if (!t.symbol || t.symbol === '-') return;
+    if (t.type === 'DEPOSIT' || t.type === 'WITHDRAWAL') return;
+    instMap.set(t.symbol, (instMap.get(t.symbol) || 0) + t.amount);
+  });
+  const instruments = [...instMap.entries()]
+    .map(([name, value]) => ({ name, value }))
+    .sort((a,b) => a.value - b.value);
+
+  return {
+    tx, first, last,
+    endBalance, deposits, netPnl, pnlPct,
+    winRate, tradeCount: trades.length,
+    ddSeries, ddPctSeries, maxDD, maxDDPct,
+    daily, instruments,
+    currency: currency || 'USD',
+    updated: updated || null,
+  };
+}
+
+/* ============================================================
+   CHART.JS GLOBALS
+   ============================================================ */
+Chart.defaults.font.family = '-apple-system,BlinkMacSystemFont,Inter,"Segoe UI",sans-serif';
+Chart.defaults.font.size = 11;
+Chart.defaults.color = MUTED;
+Chart.defaults.borderColor = GRID;
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.plugins.tooltip.backgroundColor = INK;
+Chart.defaults.plugins.tooltip.titleColor = '#fff';
+Chart.defaults.plugins.tooltip.bodyColor = '#fff';
+Chart.defaults.plugins.tooltip.borderColor = INK;
+Chart.defaults.plugins.tooltip.borderWidth = 0;
+Chart.defaults.plugins.tooltip.padding = 8;
+Chart.defaults.plugins.tooltip.cornerRadius = 4;
+Chart.defaults.plugins.tooltip.displayColors = false;
+
+let chartBalance = null;
+let chartDrawdown = null;
+let chartWaterfall = null;
+let chartInstruments = null;
+
+/* ============================================================
+   INLINE-PLUGIN: Wertelabels für den Wasserfall
+   ============================================================ */
+const valueLabelsPlugin = {
+  id: 'valueLabels',
+  afterDatasetsDraw(chart) {
+    const meta = chart.getDatasetMeta(1);
+    if (!meta || !meta.data) return;
+    const ds = chart.data.datasets[1];
+    const labels = ds && ds._labels;
+    if (!labels) return;
+
+    const { ctx } = chart;
+    ctx.save();
+    ctx.font = '10px -apple-system, BlinkMacSystemFont, Inter, sans-serif';
+    ctx.fillStyle = INK;
+    ctx.textAlign = 'center';
+
+    meta.data.forEach((bar, i) => {
+      const label = labels[i];
+      if (label == null) return;
+      const top    = Math.min(bar.y, bar.base);
+      const bottom = Math.max(bar.y, bar.base);
+      const value  = ds.data[i];
+      const isEdge = (i === 0 || i === labels.length - 1);
+
+      if (isEdge || value >= 0){
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(label, bar.x, top - 5);
+      } else {
+        ctx.textBaseline = 'top';
+        ctx.fillText(label, bar.x, bottom + 5);
+      }
+    });
+    ctx.restore();
+  }
+};
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(a){
+  CURRENCY_LABEL = a.currency || 'USD';
+
+  document.getElementById('period').textContent =
+    `${fmtDayLong(a.first.t)} — ${fmtDayLong(a.last.t)} · ${CURRENCY_LABEL} · CFD`;
+
+  document.getElementById('m-end').innerHTML =
+    `${fmtUSD(a.endBalance)}<span class="unit">${CURRENCY_LABEL}</span>`;
+
+  const pnlEl = document.getElementById('m-pnl');
+  pnlEl.className = 'value ' + (a.netPnl >= 0 ? 'pos' : 'neg');
+  pnlEl.innerHTML =
+    `${fmtSigned(a.netPnl)}<span class="unit">${a.netPnl >= 0 ? '+' : ''}${a.pnlPct.toFixed(2)}%</span>`;
+
+  document.getElementById('m-win').innerHTML =
+    `${Math.round(a.winRate)}<span class="unit">%</span>`;
+
+  const ddEl = document.getElementById('m-dd');
+  ddEl.className = 'value ' + (a.maxDDPct < 0 ? 'neg' : '');
+  ddEl.innerHTML =
+    `${a.maxDDPct.toFixed(2)}<span class="unit">%</span>`;
+
+  document.getElementById('foot-left').textContent =
+    `${a.tx.length} Transaktionen · ${a.tradeCount} Trades · inkl. Swaps & Cash Adjustment`;
+
+  let footRight = `Start: ${fmtUSD(a.deposits)} ${CURRENCY_LABEL}`;
+  if (a.updated) footRight += ` · Stand: ${fmtStamp(a.updated)}`;
+  document.getElementById('foot-right').textContent = footRight;
+
+  drawBalance(a);
+  drawDrawdown(a);
+  drawWaterfall(a);
+  drawInstruments(a);
+}
+
+/* --- Balance-Verlauf --- */
+function drawBalance(a){
+  const labels = a.tx.map(fmtTimeLabel);
+  const data = a.tx.map(t => t.balance);
+
+  const yMin = Math.min(...data), yMax = Math.max(...data);
+  const pad = Math.max((yMax - yMin) * 0.15, 5);
+
+  const config = {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderColor: INK,
+        borderWidth: 1.2,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: INK,
+        pointBorderWidth: 1,
+        pointRadius: 2.5,
+        pointHoverRadius: 4,
+        pointHitRadius: 10,
+        fill: true,
+        backgroundColor: 'rgba(17,17,17,0.035)',
+        tension: 0,
+      }, {
+        data: a.tx.map(() => a.deposits),
+        borderColor: '#cccccc',
+        borderWidth: 1,
+        borderDash: [4, 4],
+        pointRadius: 0,
+        fill: false,
+        tension: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { color: BORDER },
+          ticks: { maxTicksLimit: 4, font: { size: 10, color: MUTED } }
+        },
+        y: {
+          grid: { color: GRID },
+          border: { display: false },
+          min: yMin - pad,
+          max: yMax + pad,
+          ticks: {
+            font: { size: 10, color: MUTED },
+            callback: v => v.toLocaleString('en-US', {maximumFractionDigits:0})
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          filter: (item) => item.datasetIndex === 0,
+          callbacks: {
+            title: () => '',
+            label: (ctx) => {
+              const t = a.tx[ctx.dataIndex];
+              const head = (t.symbol && t.symbol !== '-') ? `${t.type} · ${t.symbol}` : t.type;
+              return [
+                head,
+                `${fmtSigned(t.amount)} ${CURRENCY_LABEL} · Balance ${fmtUSD(t.balance)}`
+              ];
+            },
+            labelColor: () => ({ backgroundColor: 'transparent', borderColor: 'transparent' })
+          }
+        }
+      }
+    }
+  };
+
+  if (chartBalance) {
+    chartBalance.data = config.data;
+    chartBalance.options = config.options;
+    chartBalance.update('none');
+  } else {
+    chartBalance = new Chart(document.getElementById('balance'), config);
+  }
+}
+
+/* --- Drawdown (in %) --- */
+function drawDrawdown(a){
+  const labels = a.tx.map(fmtTimeLabel);
+  const data = a.ddPctSeries;
+
+  const minDD = Math.min(...data, 0);
+  const pad = Math.max(Math.abs(minDD) * 0.15, 0.3);
+
+  const config = {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderColor: NEG,
+        borderWidth: 1.2,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: NEG,
+        pointBorderWidth: 1,
+        pointRadius: 2.5,
+        pointHoverRadius: 4,
+        pointHitRadius: 10,
+        fill: 'origin',
+        backgroundColor: 'rgba(214,90,90,0.10)',
+        tension: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { color: BORDER },
+          ticks: { maxTicksLimit: 4, font: { size: 10, color: MUTED } }
+        },
+        y: {
+          grid: { color: GRID },
+          border: { display: false },
+          max: 0,
+          min: minDD - pad,
+          ticks: {
+            font: { size: 10, color: MUTED },
+            callback: v => v.toFixed(1) + ' %'
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: () => '',
+            label: (ctx) => {
+              const t = a.tx[ctx.dataIndex];
+              const head = (t.symbol && t.symbol !== '-') ? `${t.type} · ${t.symbol}` : t.type;
+              const ddPct = ctx.raw;
+              const ddAbs = a.ddSeries[ctx.dataIndex];
+              if (ddPct >= 0){
+                return [ head, 'Kein Drawdown', `Balance: ${fmtUSD(t.balance)}` ];
+              }
+              return [
+                head,
+                `Drawdown: ${ddPct.toFixed(2)} %`,
+                `Entspricht: ${fmtUSD(ddAbs)} ${CURRENCY_LABEL}`,
+                `Balance: ${fmtUSD(t.balance)}`
+              ];
+            },
+            labelColor: () => ({ backgroundColor: 'transparent', borderColor: 'transparent' })
+          }
+        }
+      }
+    }
+  };
+
+  if (chartDrawdown) {
+    chartDrawdown.data = config.data;
+    chartDrawdown.options = config.options;
+    chartDrawdown.update('none');
+  } else {
+    chartDrawdown = new Chart(document.getElementById('drawdown'), config);
+  }
+}
+
+/* --- Wasserfall --- */
+function drawWaterfall(a){
+  const labels = ['Start', ...a.daily.map(d => fmtDayShort(d.date)), 'Ende'];
+  const deltas = a.daily.map(d => d.value);
+  const finalBalance = a.deposits + deltas.reduce((s,v) => s + v, 0);
+
+  const bases = [], values = [], colors = [], tooltips = [], valueTexts = [];
+
+  bases.push(0);
+  values.push(a.deposits);
+  colors.push(INK);
+  tooltips.push(`Start: ${fmtUSD(a.deposits)} ${CURRENCY_LABEL}`);
+  valueTexts.push(fmtUSD(a.deposits));
+
+  let running = a.deposits;
+  deltas.forEach(d => {
+    if (d >= 0){
+      bases.push(running);
+      values.push(d);
+    } else {
+      bases.push(running + d);
+      values.push(-d);
+    }
+    colors.push(d >= 0 ? POS : NEG);
+    tooltips.push(fmtSigned(d) + ' ' + CURRENCY_LABEL);
+    valueTexts.push(fmtSigned(d));
+    running += d;
+  });
+
+  bases.push(0);
+  values.push(finalBalance);
+  colors.push(INK);
+  tooltips.push(`Ende: ${fmtUSD(finalBalance)} ${CURRENCY_LABEL}`);
+  valueTexts.push(fmtUSD(finalBalance));
+
+  const config = {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'base',
+          data: bases,
+          backgroundColor: 'transparent',
+          hoverBackgroundColor: 'transparent',
+          stack: 'w',
+          barPercentage: 0.55,
+          categoryPercentage: 0.9,
+        },
+        {
+          label: 'value',
+          data: values,
+          backgroundColor: colors,
+          hoverBackgroundColor: colors,
+          stack: 'w',
+          barPercentage: 0.55,
+          categoryPercentage: 0.9,
+          _labels: valueTexts,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: 'index', intersect: false },
+      layout: { padding: { top: 20, bottom: 16 } },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          border: { display: false },
+          ticks: { font: { size: 10, color: INK } }
+        },
+        y: {
+          stacked: true,
+          grid: { color: GRID },
+          border: { display: false },
+          ticks: {
+            font: { size: 10, color: MUTED },
+            callback: v => v.toLocaleString('en-US', { maximumFractionDigits: 0 }) + ' $'
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          filter: (item) => item.datasetIndex === 1,
+          callbacks: {
+            title: (items) => labels[items[0].dataIndex],
+            label: (ctx) => tooltips[ctx.dataIndex],
+            labelColor: () => ({ backgroundColor: 'transparent', borderColor: 'transparent' })
+          }
+        }
+      }
+    },
+    plugins: [valueLabelsPlugin]
+  };
+
+  if (chartWaterfall) {
+    chartWaterfall.data = config.data;
+    chartWaterfall.options = config.options;
+    chartWaterfall.update('none');
+  } else {
+    chartWaterfall = new Chart(document.getElementById('waterfall'), config);
+  }
+}
+
+/* --- Performance je Instrument --- */
+function drawInstruments(a){
+  const labels = a.instruments.map(i => i.name);
+  const data = a.instruments.map(i => i.value);
+  const colors = data.map(v => v >= 0 ? POS : NEG);
+
+  const xMin = Math.min(0, ...data), xMax = Math.max(0, ...data);
+  const pad = Math.max((xMax - xMin) * 0.12, 2);
+
+  const config = {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: colors,
+        borderWidth: 0,
+        borderRadius: 0,
+        barPercentage: 0.55,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          grid: { color: GRID },
+          border: { display: false },
+          min: xMin - pad,
+          max: xMax + pad,
+          ticks: {
+            font: { size: 10, color: MUTED },
+            callback: v => (v >= 0 ? '+' : '') + v.toLocaleString('en-US', {maximumFractionDigits:0})
+          }
+        },
+        y: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { font: { size: 11, color: INK } }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: (items) => items[0].label,
+            label: (ctx) => `${fmtSigned(ctx.raw)} ${CURRENCY_LABEL}`,
+            labelColor: () => ({ backgroundColor: 'transparent', borderColor: 'transparent' })
+          }
+        }
+      }
+    }
+  };
+
+  if (chartInstruments) {
+    chartInstruments.data = config.data;
+    chartInstruments.options = config.options;
+    chartInstruments.update('none');
+  } else {
+    chartInstruments = new Chart(document.getElementById('instruments'), config);
+  }
+}
+
+/* ============================================================
+   DATEN LADEN
+   ============================================================ */
+const dropOverlay = document.getElementById('drop');
+const dropHint    = document.getElementById('drop-hint');
+const fileInput   = document.getElementById('file');
+let dataLoaded = false;
+
+function showDrop(msg){
+  if (msg) dropHint.textContent = msg;
+  dropOverlay.classList.add('on');
+}
+function hideDrop(){
+  dropOverlay.classList.remove('on','drag');
+}
+
+/* Primärquelle: JSON */
+async function loadFromJSON(url){
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (!json.transactions || !Array.isArray(json.transactions))
+    throw new Error('JSON enthält kein "transactions"-Array.');
+
+  const tx = json.transactions.map(txFromJSON);
+  const a = analyze(tx, json.currency, json.updated);
+  render(a);
+  dataLoaded = true;
+  hideDrop();
+}
+
+/* Drag & Drop: JSON oder CSV */
+async function loadFromFile(file){
+  try {
+    const text = await file.text();
+    const lower = (file.name || '').toLowerCase();
+
+    if (lower.endsWith('.json')){
+      const json = JSON.parse(text);
+      if (!json.transactions || !Array.isArray(json.transactions))
+        throw new Error('JSON enthält kein "transactions"-Array.');
+      const tx = json.transactions.map(txFromJSON);
+      render(analyze(tx, json.currency, json.updated));
+    } else {
+      // CSV-Fallback
+      const rows = parseCSV(text);
+      const tx = rows.map(txFromCSVRow);
+      render(analyze(tx, 'USD', null));
+    }
+
+    dataLoaded = true;
+    document.getElementById('foot-left').textContent += ' · ' + file.name;
+    hideDrop();
+  } catch (e){
+    alert('Fehler beim Verarbeiten der Datei:\n' + e.message);
+  }
+}
+
+/* Auto-Load beim Start */
+(async () => {
+  try {
+    await loadFromJSON(DATA_URL);
+  } catch (e){
+    showDrop('Auto-Load fehlgeschlagen („' + DATA_URL + '“ nicht gefunden). Bitte Datei manuell laden.');
+  }
+})();
+
+/* Drag & Drop global */
+window.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropOverlay.classList.add('on','drag');
+  if (dataLoaded) dropHint.textContent = 'Neue Datei ablegen, um Daten zu ersetzen.';
+});
+window.addEventListener('dragleave', e => {
+  if (e.relatedTarget === null) dropOverlay.classList.remove('drag');
+});
+window.addEventListener('drop', async e => {
+  e.preventDefault();
+  dropOverlay.classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f) await loadFromFile(f);
+});
+
+/* Datei-Dialog */
+document.getElementById('pick').addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', async e => {
+  const f = e.target.files[0];
+  if (f) await loadFromFile(f);
+});
+</script>
+</body>
+</html>
