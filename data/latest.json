@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T09:59:17.519031+00:00",
+  "updated": "2026-10-04T21:18:30.289334+00:00",
   "currency": "USD",
-  "count": 54,
+  "count": 58,
   "transactions": [
     {
       "id": "140169475972222",
@@ -650,6 +650,54 @@
       "name": "Ethereum/USD",
       "status": "PROCESSED",
       "tradeId": ""
+    },
+    {
+      "id": "140722750786070",
+      "timestamp": "2026-10-04T21:01:23.807740+00:00",
+      "balance": 1153.81,
+      "amount": -0.1,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "XRP/USD",
+      "name": "Ripple/USD",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140722781286575",
+      "timestamp": "2026-10-04T21:01:52.426326+00:00",
+      "balance": 1153.66,
+      "amount": -0.15,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "BTC/USD",
+      "name": "Bitcoin/USD",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140722786410625",
+      "timestamp": "2026-10-04T21:01:57.669764+00:00",
+      "balance": 1153.54,
+      "amount": -0.12,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "ETH/USD",
+      "name": "Ethereum/USD",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140723751139185",
+      "timestamp": "2026-10-04T21:17:17.982543+00:00",
+      "balance": 1154.75,
+      "amount": 1.21,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "BTC/USD",
+      "name": "Bitcoin/USD",
+      "status": "PROCESSED",
+      "tradeId": "000940dd-0001-54c4-0000-50fa00070198_000940dd-0001-54c4-0000-000085650332"
     }
   ]
 }
