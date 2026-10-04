@@ -9,6 +9,7 @@ Verwendung:
 
 import csv
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,10 +29,22 @@ def parse_number(s):
 
 
 def parse_timestamp(s):
-    """'2026-10-02 15:21:54.303843 +00:00' -> ISO 8601 in UTC"""
+    """
+    '2026-10-02 15:21:54.303843 +00:00' -> ISO 8601 in UTC.
+
+    Problem: Der Broker setzt ein Leerzeichen vor den Zeitzonen-Offset.
+    Pythons fromisoformat() mag das nicht. Wir entfernen es per Regex,
+    aber nur am Ende und nur vor einem Offset wie '+00:00' oder '-05:00'.
+    """
     if not s:
         return None
     s = str(s).strip()
+    if not s:
+        return None
+
+    # Leerzeichen vor Zeitzonen-Offset entfernen: " +00:00" -> "+00:00"
+    s = re.sub(r"\s+([+-]\d{2}:?\d{2})$", r"\1", s)
+
     try:
         dt = datetime.fromisoformat(s)
         if dt.tzinfo is None:
@@ -46,14 +59,25 @@ def convert(input_path, output_path):
         reader = csv.DictReader(f)
         rows = list(reader)
 
+    if not rows:
+        print("CSV enthält keine Datenzeilen.")
+        return
+
+    # Diagnose: Header ausgeben, damit man Tippfehler sofort sieht
+    print(f"Spalten ({len(rows[0])}): {list(rows[0].keys())}")
+
     transactions = []
     skipped = 0
+    first_error = None
 
-    for r in rows:
+    for i, r in enumerate(rows, start=2):  # Zeile 2 = erste Datenzeile in der Datei
         ts = parse_timestamp(r.get("Modified (UTC)", ""))
         balance = parse_number(r.get("Balance", ""))
+
         if ts is None or balance is None:
             skipped += 1
+            if first_error is None:
+                first_error = (i, r.get("Modified (UTC)"), r.get("Balance"), ts, balance)
             continue
 
         transactions.append({
@@ -69,7 +93,6 @@ def convert(input_path, output_path):
             "tradeId":   (r.get("Trade Id", "") or "").strip(),
         })
 
-    # chronologisch aufsteigend
     transactions.sort(key=lambda t: t["timestamp"])
 
     output = {
@@ -87,6 +110,16 @@ def convert(input_path, output_path):
     if skipped:
         msg += f" ({skipped} Zeilen übersprungen)"
     print(msg)
+
+    # Diagnose bei übersprungenen Zeilen
+    if first_error:
+        line_no, raw_ts, raw_bal, ts_ok, bal_ok = first_error
+        print("\nErste übersprungene Zeile:")
+        print(f"  CSV-Zeile Nr.:        {line_no}")
+        print(f"  'Modified (UTC)' roh: {raw_ts!r}")
+        print(f"  'Balance' roh:        {raw_bal!r}")
+        print(f"  → Timestamp geparst:  {ts_ok}")
+        print(f"  → Balance geparst:    {bal_ok}")
 
 
 if __name__ == "__main__":
