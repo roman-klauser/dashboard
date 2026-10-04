@@ -96,12 +96,12 @@
       <div class="value" id="m-pnl">—</div>
     </div>
     <div class="metric">
-      <div class="label">Win-Rate</div>
-      <div class="value" id="m-win">—</div>
-    </div>
-    <div class="metric">
       <div class="label">Max Drawdown</div>
       <div class="value" id="m-dd">—</div>
+    </div>
+    <div class="metric">
+      <div class="label">Trades</div>
+      <div class="value" id="m-trades">—</div>
     </div>
   </div>
 
@@ -146,8 +146,8 @@
 /* ============================================================
    KONFIGURATION
    ============================================================ */
-const DATA_URL = 'data/latest.json';   // ← primäre Datenquelle
-let CURRENCY_LABEL = 'USD';            // wird beim Rendern überschrieben
+const DATA_URL = 'data/latest.json';
+let CURRENCY_LABEL = 'USD';
 
 /* ============================================================
    STYLE-KONSTANTEN
@@ -196,7 +196,7 @@ function parseCSV(text){
 }
 
 /* ============================================================
-   NORMALISIERUNG: CSV-Zeile oder JSON-Objekt → einheitliches tx
+   NORMALISIERUNG
    ============================================================ */
 function txFromCSVRow(r){
   return {
@@ -247,7 +247,7 @@ function fmtTimeLabel(t){
 }
 
 /* ============================================================
-   ANALYSE  (arbeitet auf normalisierten tx-Objekten)
+   ANALYSE
    ============================================================ */
 function analyze(rawTx, currency, updated){
   const tx = rawTx
@@ -270,8 +270,9 @@ function analyze(rawTx, currency, updated){
   const pnlPct = deposits > 0 ? (netPnl / deposits) * 100 : 0;
 
   const trades = tx.filter(t => t.type === 'TRADE');
-  const wins = trades.filter(t => t.amount > 0).length;
-  const winRate = trades.length ? (wins / trades.length) * 100 : 0;
+  const winRate = trades.length
+    ? (trades.filter(t => t.amount > 0).length / trades.length) * 100
+    : 0;
 
   // Drawdown (absolut + relativ)
   const balances = tx.map(t => t.balance);
@@ -389,21 +390,24 @@ function render(a){
   document.getElementById('period').textContent =
     `${fmtDayLong(a.first.t)} — ${fmtDayLong(a.last.t)} · ${CURRENCY_LABEL} · CFD`;
 
+  // 1. Endbalance
   document.getElementById('m-end').innerHTML =
     `${fmtUSD(a.endBalance)}<span class="unit">${CURRENCY_LABEL}</span>`;
 
+  // 2. Netto P&L
   const pnlEl = document.getElementById('m-pnl');
   pnlEl.className = 'value ' + (a.netPnl >= 0 ? 'pos' : 'neg');
   pnlEl.innerHTML =
     `${fmtSigned(a.netPnl)}<span class="unit">${a.netPnl >= 0 ? '+' : ''}${a.pnlPct.toFixed(2)}%</span>`;
 
-  document.getElementById('m-win').innerHTML =
-    `${Math.round(a.winRate)}<span class="unit">%</span>`;
-
+  // 3. Max Drawdown
   const ddEl = document.getElementById('m-dd');
   ddEl.className = 'value ' + (a.maxDDPct < 0 ? 'neg' : '');
   ddEl.innerHTML =
     `${a.maxDDPct.toFixed(2)}<span class="unit">%</span>`;
+
+  // 4. Trades
+  document.getElementById('m-trades').textContent = a.tradeCount;
 
   document.getElementById('foot-left').textContent =
     `${a.tx.length} Transaktionen · ${a.tradeCount} Trades · inkl. Swaps & Cash Adjustment`;
@@ -775,7 +779,6 @@ function hideDrop(){
   dropOverlay.classList.remove('on','drag');
 }
 
-/* Primärquelle: JSON */
 async function loadFromJSON(url){
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -784,13 +787,11 @@ async function loadFromJSON(url){
     throw new Error('JSON enthält kein "transactions"-Array.');
 
   const tx = json.transactions.map(txFromJSON);
-  const a = analyze(tx, json.currency, json.updated);
-  render(a);
+  render(analyze(tx, json.currency, json.updated));
   dataLoaded = true;
   hideDrop();
 }
 
-/* Drag & Drop: JSON oder CSV */
 async function loadFromFile(file){
   try {
     const text = await file.text();
@@ -803,7 +804,6 @@ async function loadFromFile(file){
       const tx = json.transactions.map(txFromJSON);
       render(analyze(tx, json.currency, json.updated));
     } else {
-      // CSV-Fallback
       const rows = parseCSV(text);
       const tx = rows.map(txFromCSVRow);
       render(analyze(tx, 'USD', null));
@@ -817,7 +817,6 @@ async function loadFromFile(file){
   }
 }
 
-/* Auto-Load beim Start */
 (async () => {
   try {
     await loadFromJSON(DATA_URL);
@@ -826,7 +825,6 @@ async function loadFromFile(file){
   }
 })();
 
-/* Drag & Drop global */
 window.addEventListener('dragover', e => {
   e.preventDefault();
   dropOverlay.classList.add('on','drag');
@@ -842,7 +840,6 @@ window.addEventListener('drop', async e => {
   if (f) await loadFromFile(f);
 });
 
-/* Datei-Dialog */
 document.getElementById('pick').addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', async e => {
   const f = e.target.files[0];
