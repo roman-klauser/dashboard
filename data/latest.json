@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-05T13:37:48.341438+00:00",
+  "updated": "2026-10-05T15:21:54.307283+00:00",
   "currency": "USD",
-  "count": 65,
+  "count": 69,
   "transactions": [
     {
       "id": "140169475972222",
@@ -782,6 +782,54 @@
       "name": "Germany 40",
       "status": "PROCESSED",
       "tradeId": "07101627-0000-5552-0000-50fb0011a357_07101627-0000-5552-0000-0000830924ea"
+    },
+    {
+      "id": "140787560210001",
+      "timestamp": "2026-10-05T14:11:30.434451+00:00",
+      "balance": 1149.14,
+      "amount": 1.4,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "ETH/USD",
+      "name": "Ethereum/USD",
+      "status": "PROCESSED",
+      "tradeId": "0015421d-0001-54c4-0000-50fb000b7b97_0015421d-0001-54c4-0000-00008517000c"
+    },
+    {
+      "id": "140789709686798",
+      "timestamp": "2026-10-05T14:45:40.825986+00:00",
+      "balance": 1149.23,
+      "amount": 0.09,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "XRP/USD",
+      "name": "Ripple/USD",
+      "status": "PROCESSED",
+      "tradeId": "0061241d-0001-54c4-0000-50fb0006bc92_0061241d-0001-54c4-0000-0000815700a5"
+    },
+    {
+      "id": "140789995950662",
+      "timestamp": "2026-10-05T14:50:13.979706+00:00",
+      "balance": 1150.48,
+      "amount": 1.25,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": "07101627-0000-5552-0000-50fb00148285_07101627-0000-5552-0000-0000830924ea"
+    },
+    {
+      "id": "140791090677269",
+      "timestamp": "2026-10-05T15:07:37.409220+00:00",
+      "balance": 1144.72,
+      "amount": -5.76,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Oil - Crude",
+      "name": "Crude Oil Spot",
+      "status": "PROCESSED",
+      "tradeId": "00018509-0001-54c4-0000-50fb00042f17_00018509-0001-54c4-0000-000087577512"
     }
   ]
 }
