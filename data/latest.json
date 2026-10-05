@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-04T21:18:30.289334+00:00",
+  "updated": "2026-10-05T06:46:26.667388+00:00",
   "currency": "USD",
-  "count": 58,
+  "count": 59,
   "transactions": [
     {
       "id": "140169475972222",
@@ -698,6 +698,18 @@
       "name": "Bitcoin/USD",
       "status": "PROCESSED",
       "tradeId": "000940dd-0001-54c4-0000-50fa00070198_000940dd-0001-54c4-0000-000085650332"
+    },
+    {
+      "id": "140757331829945",
+      "timestamp": "2026-10-05T06:11:02.034595+00:00",
+      "balance": 1156.53,
+      "amount": 1.78,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "EUR/USD",
+      "name": "EUR/USD",
+      "status": "PROCESSED",
+      "tradeId": "00005552-0001-54c4-0000-50fb00066fe7_00005552-0001-54c4-0000-0000822100c0"
     }
   ]
 }
