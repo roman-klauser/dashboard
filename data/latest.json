@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-05T15:21:54.307283+00:00",
+  "updated": "2026-10-05T15:43:50.015493+00:00",
   "currency": "USD",
-  "count": 69,
+  "count": 71,
   "transactions": [
     {
       "id": "140169475972222",
@@ -830,6 +830,30 @@
       "name": "Crude Oil Spot",
       "status": "PROCESSED",
       "tradeId": "00018509-0001-54c4-0000-50fb00042f17_00018509-0001-54c4-0000-000087577512"
+    },
+    {
+      "id": "140792673002554",
+      "timestamp": "2026-10-05T15:32:46.399698+00:00",
+      "balance": 1145.9,
+      "amount": 1.18,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "BTC/USD",
+      "name": "Bitcoin/USD",
+      "status": "PROCESSED",
+      "tradeId": "000940dd-0001-54c4-0000-50fb0011a84a_000940dd-0001-54c4-0000-000085650332"
+    },
+    {
+      "id": "140792784152783",
+      "timestamp": "2026-10-05T15:34:32.056336+00:00",
+      "balance": 1146.47,
+      "amount": 0.57,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "ETH/USD",
+      "name": "Ethereum/USD",
+      "status": "PROCESSED",
+      "tradeId": "0015421d-0001-54c4-0000-50fb000d0201_0015421d-0001-54c4-0000-00008517000c"
     }
   ]
 }
