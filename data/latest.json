@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-05T11:12:20.051604+00:00",
+  "updated": "2026-10-05T13:37:48.341438+00:00",
   "currency": "USD",
-  "count": 62,
+  "count": 65,
   "transactions": [
     {
       "id": "140169475972222",
@@ -746,6 +746,42 @@
       "name": "Crude Oil Spot",
       "status": "PROCESSED",
       "tradeId": "00018509-0001-54c4-0000-50fb0001b4a2_00018509-0001-54c4-0000-000087572e76"
+    },
+    {
+      "id": "140776619363387",
+      "timestamp": "2026-10-05T11:17:36.233817+00:00",
+      "balance": 1149.32,
+      "amount": -5.59,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "GBP/JPY",
+      "name": "GBP/JPY",
+      "status": "PROCESSED",
+      "tradeId": "00007090-0000-a419-0000-50fb0023e7c3_00007090-0000-a419-0000-000080fc003b"
+    },
+    {
+      "id": "140779329828621",
+      "timestamp": "2026-10-05T12:00:41.570206+00:00",
+      "balance": 1143.67,
+      "amount": -5.65,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": "07101627-0000-5552-0000-50fb000ec8dd_07101627-0000-5552-0000-000083090c32"
+    },
+    {
+      "id": "140785256437476",
+      "timestamp": "2026-10-05T13:34:53.755842+00:00",
+      "balance": 1147.74,
+      "amount": 4.07,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": "07101627-0000-5552-0000-50fb0011a357_07101627-0000-5552-0000-0000830924ea"
     }
   ]
 }
