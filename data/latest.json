@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-05T07:43:02.830969+00:00",
+  "updated": "2026-10-05T11:12:20.051604+00:00",
   "currency": "USD",
-  "count": 60,
+  "count": 62,
   "transactions": [
     {
       "id": "140169475972222",
@@ -722,6 +722,30 @@
       "name": "Germany 40",
       "status": "PROCESSED",
       "tradeId": "07101627-0000-5552-0000-50fb0004d138_07101627-0000-5552-0000-000083090518"
+    },
+    {
+      "id": "140763677734359",
+      "timestamp": "2026-10-05T07:51:54.505538+00:00",
+      "balance": 1160.65,
+      "amount": -2.88,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Silver",
+      "name": "Silver",
+      "status": "PROCESSED",
+      "tradeId": "006011e7-0001-54c4-0000-50fb0003214f_006011e7-0001-54c4-0000-0000824d0ac4"
+    },
+    {
+      "id": "140767186308655",
+      "timestamp": "2026-10-05T08:47:40.117378+00:00",
+      "balance": 1154.91,
+      "amount": -5.74,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Oil - Crude",
+      "name": "Crude Oil Spot",
+      "status": "PROCESSED",
+      "tradeId": "00018509-0001-54c4-0000-50fb0001b4a2_00018509-0001-54c4-0000-000087572e76"
     }
   ]
 }
