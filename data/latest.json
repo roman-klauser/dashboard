@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-06T06:53:43.447217+00:00",
+  "updated": "2026-10-06T15:06:38.888142+00:00",
   "currency": "USD",
-  "count": 76,
+  "count": 81,
   "transactions": [
     {
       "id": "140169475972222",
@@ -914,6 +914,66 @@
       "name": "Germany 40",
       "status": "PROCESSED",
       "tradeId": "07101627-0000-5552-0000-50fc00023799_07101627-0000-5552-0000-00008309351e"
+    },
+    {
+      "id": "140854717305326",
+      "timestamp": "2026-10-06T07:58:56.118499+00:00",
+      "balance": 1132.85,
+      "amount": -5.75,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "GBP/JPY",
+      "name": "GBP/JPY",
+      "status": "PROCESSED",
+      "tradeId": "00007090-0000-a419-0000-50fc0013ff8d_00007090-0000-a419-0000-000080fc00c5"
+    },
+    {
+      "id": "140868596246332",
+      "timestamp": "2026-10-06T11:39:32.466465+00:00",
+      "balance": 1129.99,
+      "amount": -2.86,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Silver",
+      "name": "Silver",
+      "status": "PROCESSED",
+      "tradeId": "006011e7-0001-54c4-0000-50fc00045f0e_006011e7-0001-54c4-0000-0000824d2d62"
+    },
+    {
+      "id": "140869371153140",
+      "timestamp": "2026-10-06T11:51:51.756149+00:00",
+      "balance": 1126.05,
+      "amount": -3.94,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Gold",
+      "name": "Gold",
+      "status": "PROCESSED",
+      "tradeId": "00601567-0001-54c4-0000-50fc000d9c2c_00601567-0001-54c4-0000-0000924e1ed5"
+    },
+    {
+      "id": "140875873320642",
+      "timestamp": "2026-10-06T13:35:12.771152+00:00",
+      "balance": 1128.33,
+      "amount": 2.28,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "US100",
+      "name": "US Tech 100",
+      "status": "PROCESSED",
+      "tradeId": "00384627-0001-54c4-0000-50fc000669d6_00384627-0001-54c4-0000-000089f5a07a"
+    },
+    {
+      "id": "140881464278291",
+      "timestamp": "2026-10-06T15:04:04.785784+00:00",
+      "balance": 1128.36,
+      "amount": 0.03,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Gold",
+      "name": "Gold",
+      "status": "PROCESSED",
+      "tradeId": "00601567-0001-54c4-0000-50fc0013821f_00601567-0001-54c4-0000-0000924ee9de"
     }
   ]
 }
