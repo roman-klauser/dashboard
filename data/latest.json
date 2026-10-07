@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-06T15:06:38.888142+00:00",
+  "updated": "2026-10-07T10:17:30.484615+00:00",
   "currency": "USD",
-  "count": 81,
+  "count": 97,
   "transactions": [
     {
       "id": "140169475972222",
@@ -974,6 +974,198 @@
       "name": "Gold",
       "status": "PROCESSED",
       "tradeId": "00601567-0001-54c4-0000-50fc0013821f_00601567-0001-54c4-0000-0000924ee9de"
+    },
+    {
+      "id": "140887251425877",
+      "timestamp": "2026-10-06T16:36:03.576753+00:00",
+      "balance": 1128.45,
+      "amount": 0.09,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "ETH/USD",
+      "name": "Ethereum/USD",
+      "status": "PROCESSED",
+      "tradeId": "0015421d-0001-54c4-0000-50fc00060c9b_0015421d-0001-54c4-0000-000085173121"
+    },
+    {
+      "id": "140889560411063",
+      "timestamp": "2026-10-06T17:12:45.873346+00:00",
+      "balance": 1122.73,
+      "amount": -5.72,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "BTC/USD",
+      "name": "Bitcoin/USD",
+      "status": "PROCESSED",
+      "tradeId": "000940dd-0001-54c4-0000-50fc000f6b12_000940dd-0001-54c4-0000-00008565416d"
+    },
+    {
+      "id": "140896444232320",
+      "timestamp": "2026-10-06T19:02:10.495114+00:00",
+      "balance": 1120.23,
+      "amount": -2.5,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Silver",
+      "name": "Silver",
+      "status": "PROCESSED",
+      "tradeId": "006011e7-0001-54c4-0000-50fc00077f32_006011e7-0001-54c4-0000-0000824d4465"
+    },
+    {
+      "id": "140900104867841",
+      "timestamp": "2026-10-06T20:00:21.457369+00:00",
+      "balance": 1120.25,
+      "amount": 0.02,
+      "currency": "USD",
+      "type": "CORPORATE_ACTION",
+      "symbol": "US100",
+      "name": "US Tech 100",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140903873407293",
+      "timestamp": "2026-10-06T21:00:15.990684+00:00",
+      "balance": 1120.14,
+      "amount": -0.11,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "US100",
+      "name": "US Tech 100",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140903909052843",
+      "timestamp": "2026-10-06T21:00:49.035470+00:00",
+      "balance": 1120.14,
+      "amount": 0.0,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "EUR/USD",
+      "name": "EUR/USD",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140903941554327",
+      "timestamp": "2026-10-06T21:01:20.114111+00:00",
+      "balance": 1119.86,
+      "amount": -0.28,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "SOL/USD",
+      "name": "Solana/USD",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140904891621666",
+      "timestamp": "2026-10-06T21:16:26.047642+00:00",
+      "balance": 1118.82,
+      "amount": -1.04,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "EUR/USD",
+      "name": "EUR/USD",
+      "status": "PROCESSED",
+      "tradeId": "00005552-0001-54c4-0000-50fc00147704_00005552-0001-54c4-0000-000082211dcf"
+    },
+    {
+      "id": "140920465118050",
+      "timestamp": "2026-10-07T01:23:58.473790+00:00",
+      "balance": 1114.13,
+      "amount": -4.69,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "SOL/USD",
+      "name": "Solana/USD",
+      "status": "PROCESSED",
+      "tradeId": "004cf31d-0001-54c4-0000-50fd0005e34a_004cf31d-0001-54c4-0000-000081740536"
+    },
+    {
+      "id": "140943269526127",
+      "timestamp": "2026-10-07T07:26:26.473502+00:00",
+      "balance": 1118.77,
+      "amount": 4.64,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": "07101627-0000-5552-0000-50fd00036eed_07101627-0000-5552-0000-0000830962ab"
+    },
+    {
+      "id": "140943758167199",
+      "timestamp": "2026-10-07T07:34:12.874851+00:00",
+      "balance": 1122.07,
+      "amount": 3.3,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "US100",
+      "name": "US Tech 100",
+      "status": "PROCESSED",
+      "tradeId": "00384627-0001-54c4-0000-50fd0002beb3_00384627-0001-54c4-0000-000089f5a07a"
+    },
+    {
+      "id": "140947099881103",
+      "timestamp": "2026-10-07T08:27:19.437322+00:00",
+      "balance": 1122.52,
+      "amount": 0.45,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": "07101627-0000-5552-0000-50fd00059642_07101627-0000-5552-0000-0000830962ab"
+    },
+    {
+      "id": "140948998863184",
+      "timestamp": "2026-10-07T08:57:30.454822+00:00",
+      "balance": 1122.64,
+      "amount": 0.12,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "GBP/JPY",
+      "name": "GBP/JPY",
+      "status": "PROCESSED",
+      "tradeId": "00007090-0000-a419-0000-50fd00157127_00007090-0000-a419-0000-000080fc01cb"
+    },
+    {
+      "id": "140949695125572",
+      "timestamp": "2026-10-07T09:08:34.337807+00:00",
+      "balance": 1122.71,
+      "amount": 0.07,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Oil - Crude",
+      "name": "Crude Oil Spot",
+      "status": "PROCESSED",
+      "tradeId": "00018509-0001-54c4-0000-50fd000162a8_00018509-0001-54c4-0000-0000875862bf"
+    },
+    {
+      "id": "140953348394314",
+      "timestamp": "2026-10-07T10:06:38.238560+00:00",
+      "balance": 1126.88,
+      "amount": 4.17,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": "07101627-0000-5552-0000-50fd000861c6_07101627-0000-5552-0000-000083097535"
+    },
+    {
+      "id": "140953416552602",
+      "timestamp": "2026-10-07T10:07:43.706856+00:00",
+      "balance": 1121.07,
+      "amount": -5.81,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "BTC/USD",
+      "name": "Bitcoin/USD",
+      "status": "PROCESSED",
+      "tradeId": "000940dd-0001-54c4-0000-50fd0007bb8f_000940dd-0001-54c4-0000-000085655059"
     }
   ]
 }
