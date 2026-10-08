@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-07T14:44:07.806527+00:00",
+  "updated": "2026-10-08T10:47:03.446875+00:00",
   "currency": "USD",
-  "count": 100,
+  "count": 108,
   "transactions": [
     {
       "id": "140169475972222",
@@ -1202,6 +1202,102 @@
       "name": "Germany 40",
       "status": "PROCESSED",
       "tradeId": "07101627-0000-5552-0000-50fd00102224_07101627-0000-5552-0000-000083097535"
+    },
+    {
+      "id": "140994148448974",
+      "timestamp": "2026-10-07T20:55:08.226923+00:00",
+      "balance": 1128.06,
+      "amount": -1.39,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "BTC/USD",
+      "name": "Bitcoin/USD",
+      "status": "PROCESSED",
+      "tradeId": "000940dd-0001-54c4-0000-50fd0013cbd4_000940dd-0001-54c4-0000-0000856557b9"
+    },
+    {
+      "id": "140994457793246",
+      "timestamp": "2026-10-07T21:00:03.956038+00:00",
+      "balance": 1128.2,
+      "amount": 0.14,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "EUR/USD",
+      "name": "EUR/USD",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140994523840414",
+      "timestamp": "2026-10-07T21:01:06.294926+00:00",
+      "balance": 1127.46,
+      "amount": -0.74,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "GBP/JPY",
+      "name": "GBP/JPY",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "140994561602933",
+      "timestamp": "2026-10-07T21:01:42.135589+00:00",
+      "balance": 1127.44,
+      "amount": -0.02,
+      "currency": "USD",
+      "type": "SWAP",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": ""
+    },
+    {
+      "id": "141013752677867",
+      "timestamp": "2026-10-08T02:06:44.811863+00:00",
+      "balance": 1128.83,
+      "amount": 1.39,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "EUR/USD",
+      "name": "EUR/USD",
+      "status": "PROCESSED",
+      "tradeId": "00005552-0001-54c4-0000-50fe0001860b_00005552-0001-54c4-0000-0000822127a0"
+    },
+    {
+      "id": "141029637503847",
+      "timestamp": "2026-10-08T06:19:13.542770+00:00",
+      "balance": 1123.07,
+      "amount": -5.76,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "US100",
+      "name": "US Tech 100",
+      "status": "PROCESSED",
+      "tradeId": "00384627-0001-54c4-0000-50fe0002b62d_00384627-0001-54c4-0000-000089f7f49f"
+    },
+    {
+      "id": "141032333416058",
+      "timestamp": "2026-10-08T07:02:04.210999+00:00",
+      "balance": 1117.27,
+      "amount": -5.8,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "Oil - Crude",
+      "name": "Crude Oil Spot",
+      "status": "PROCESSED",
+      "tradeId": "00018509-0001-54c4-0000-50fe000118a7_00018509-0001-54c4-0000-000087590561"
+    },
+    {
+      "id": "141032742366998",
+      "timestamp": "2026-10-08T07:08:34.314806+00:00",
+      "balance": 1120.1,
+      "amount": 2.83,
+      "currency": "USD",
+      "type": "TRADE",
+      "symbol": "DE40",
+      "name": "Germany 40",
+      "status": "PROCESSED",
+      "tradeId": "07101627-0000-5552-0000-50fe00035c6e_07101627-0000-5552-0000-000083097535"
     }
   ]
 }
